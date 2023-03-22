@@ -35,6 +35,7 @@ jobs:
         with:
           github-token: ${{ secrets.github_token }}
           output-file: "false"
+          preset: "java"
 
       - name: Create Release
         uses: actions/create-release@v1

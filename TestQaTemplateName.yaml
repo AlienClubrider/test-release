@@ -1,0 +1,55 @@
+
+pipeline:
+  name: TestQaTemplateName
+  identifier: TestQaTemplateName
+  projectIdentifier: communityeng
+  orgIdentifier: default
+  tags: {}
+  stages:
+    - stage:
+        name: k8deploy
+        identifier: k8deploy
+        description: ""
+        type: Deployment
+        spec:
+          serviceConfig:
+            serviceRef: k8service
+            serviceDefinition:
+              spec:
+                variables: []
+                manifests:
+                  - manifest:
+                      identifier: manifest
+                      type: K8sManifest
+                      spec:
+                        store:
+                          type: Github
+                          spec:
+                            connectorRef: testhelp
+                            gitFetchType: Branch
+                            paths:
+                              - default-k8s-manifests/Manifests/Files/templates
+                            repoName: harness-docs
+                            branch: main
+                        skipResourceVersioning: false
+                  - manifest:
+                      identifier: values
+                      type: Values
+                      spec:
+                        store:
+                          type: Github
+                          spec:
+                            connectorRef: testhelp
+                            gitFetchType: Branch
+                            paths:
+                              - default-k8s-manifests/Manifests/Files/ng_values_dockercfg.yaml
+                            repoName: harness-docs
+                            branch: main
+                artifacts:
+                  primary:
+                    spec:
+                      connectorRef: harnessdocker
+                      imagePath: <+input>
+                      tag: <+input>
+                    type: DockerRegistry
+              type: Kubernetes
